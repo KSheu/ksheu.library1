@@ -1,0 +1,2 @@
+# ksheu.lib
+Useful functions
