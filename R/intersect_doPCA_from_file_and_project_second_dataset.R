@@ -16,8 +16,8 @@
 #' 
 
 intersect_doPCA_from_file_and_project_second_dataset=function(file,file2,train_string,center=TRUE,scale=FALSE) {
-  data1=read.delim(file, header = T)
-  data2=read.delim(file2, header = T)
+  data1=read.delim(file, header = T, stringsAsFactors = F)
+  data2=read.delim(file2, header = T, stringsAsFactors = F)
   
   #remove rows that are all 0
   data1 = data1[rowSums((data1[,-1]==0))<ncol(data1[-1]),]

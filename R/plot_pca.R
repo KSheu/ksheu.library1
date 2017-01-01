@@ -21,7 +21,7 @@ plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
   table$type = info.type[match(table$Score, info.name)]
   
   
-  pcx.y <- ggplot(table, aes_string(x=PCx,y=PCy)) +geom_point(size = I(2), aes("Type",color = factor(type))) +
+  pcx.y <- ggplot(table, aes_string(x=PCx,y=PCy)) +geom_point(size = I(2), aes(color = factor(type))) +
     theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
           legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
           axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+

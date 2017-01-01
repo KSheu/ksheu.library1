@@ -14,7 +14,7 @@
 
 log_PCA_from_file=function(file,center=TRUE,scale=FALSE) {
   
-  data=read.delim(file, header = T)
+  data=read.delim(file, header = T, stringsAsFactors = F)
   
   #log2(x+1)
   data = cbind("genename" = data[,1], log(data[,-1]+1, 2))#log2

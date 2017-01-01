@@ -18,7 +18,7 @@ plot_pca_projection_only= function(rotated.file2, info.name, info.type, title = 
   projected_data = read.delim(rotated.file2)
   projected_data$type = info.type[match(projected_data$Sample, info.name)]
 
-  pcx.y <- ggplot(projected_data, aes_string(x=PCx,y=PCy)) +geom_point(size = I(2), aes("Type",color = factor(type))) +
+  pcx.y <- ggplot(projected_data, aes_string(x=PCx,y=PCy)) +geom_point(size = I(2), aes(color = factor(type))) +
     theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
           legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
           axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+

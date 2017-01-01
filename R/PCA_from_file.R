@@ -14,7 +14,7 @@
 
 
 PCA_from_file=function(file,center=TRUE,scale=FALSE) {
-  data=read.delim(file, header = F)
+  data=read.delim(file, header = T, stringsAsFactors = F)
   
   #remove rows that are all 0
   data= data[rowSums((data[,-1]==0))<ncol(data[-1]),]
