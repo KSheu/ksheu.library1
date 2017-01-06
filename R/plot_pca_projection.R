@@ -40,8 +40,7 @@ plot_pca_projection = function(file, rotated.file, info.name, info.type, info.na
           legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
           axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
     labs(title = title)+
-    theme_bw()+
-    if(labels==TRUE){geom_text(mapping = aes(label = rownames(pc.scores.reduced)), check_overlap = TRUE, size = 3)}
+    theme_bw()
   
   pcx.y
   

@@ -24,7 +24,7 @@ plot_pca_projection_only= function(rotated.file2, info.name, info.type, title = 
           axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
     labs(title = title)+
     theme_bw()+
-    if(labels==TRUE){geom_text(data = projected_data, mapping = aes(label = Score), check_overlap = TRUE, size = 3)}
+    if(labels==TRUE){geom_text(data = projected_data, mapping = aes(label = Sample), check_overlap = TRUE, size = 3)}
   pcx.y
   
 }
