@@ -1,4 +1,4 @@
-#' Plot PCA with save option
+#' Plot PCA projection with save option
 #'
 #' @param scores.file PCA score file (scores file, output of PCA_from_file)
 #' @param info.name vector of sample names
@@ -23,7 +23,7 @@
 # label= column name to label samples by on PCA plot, false if no label
 # Function
 
-plot_pca_and_save=function(scores.file, info.name, info.type, PCx="PC1",PCy="PC2", factor.levels = levels(info.type),aes_fill=NULL,savename,savePlot=F,width=6,height=2,title = "",label=F,savetype=".pdf",w=6,h=3,aspect.ratio=0.8,legend=F,legendname="default",colors=colpalette[1:4],psize=2.0,plotLabelname="none") {
+plot_pca_projection_and_save=function(scores.file, info.name, info.type, PCx="PC1",PCy="PC2", factor.levels = levels(info.type),aes_fill=NULL,savename,savePlot=F,width=3,height=2,title = "",label=F,savetype=".pdf",w=6,h=3,aspect.ratio=0.8,legend=F,legendname="default",colors=colpalette[1:4],psize=2.5,plotLabelname="none") {
   #plot graph
   require(ggplot2)
   a.scores = read.table(scores.file, header = T)
@@ -38,7 +38,7 @@ plot_pca_and_save=function(scores.file, info.name, info.type, PCx="PC1",PCy="PC2
   if(legendname=="default") legendname=aes_fill
   
   
-  a.scores$type = info.type[match(a.scores$Score, info.name)]
+  a.scores$type = info.type[match(a.scores$Sample, info.name)]
   a.scores$type<-factor(a.scores$type, levels=factor.levels)
   
   p=ggplot(a.scores,aes_string(x=PCx,y=PCy))+geom_point(size=psize,pch=21,colour="black",aes_string(fill=aes_fill))+theme_bw()+labs(title = title)+theme(aspect.ratio=aspect.ratio,panel.border=element_rect(colour="black",size=1),legend.position="none",axis.title = element_text(size=10),axis.text = element_text(size=10))
