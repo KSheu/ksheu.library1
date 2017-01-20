@@ -23,23 +23,20 @@
 #'
 
 #sample input
-# file = "Beltran_2016_rsem_genes_upper_norm_counts_oneperpt_rmcluster2_log2.txt"
-# file = "Beltran_2016_rsem_genes_upper_norm_counts_oneperpt_log2.txt"
-# sample.names = human.info$sample
-# sample.type = human.info$type
-# y.response = ifelse(human.info$type=="NEPC", 1, 0)
+# file = "filename.txt"
+# sample.names = info$sample
+# sample.type = info$type
+# y.response = ifelse(info$type=="TYPE", 1, 0)
 # scale = F
 # labels = T
 # comps = 3
 # comp.x = "comp.1"
 # comp.y = "comp.2"
-# title = "PLSR Beltran expression one per pt. (17880genes)"
-# #file2 = "john_jungwook_rsem_genes_upper_norm_counts_log2.txt"
-# #file2 = "TOIL_TCGA_PRAD_rsem_genes_upper_norm_counts_log2.txt"
-# file2 = "SU2C_WCDT_gene_norm_log2.txt"
-# sample.names2 = human.info$sample
-# sample.type2 = human.info$type
-# train_string = "toBeltranoneperpt"
+# title = "Title"
+# #file2 = "filename2.txt"
+# sample.names2 = info$sample
+# sample.type2 = info$type
+# train_string = "tofile1"
 PLSR_from_file_and_predict_second_dataset = function(file, file2, sample.names, sample.type, y.response, sample.names2=NULL, sample.type2=NULL, train_string,
                                                      title = "PLSR", comp.x = "comp.1", comp.y = "comp.2",comps = 3, scale = F, labels = F){
   require(mixOmics)
