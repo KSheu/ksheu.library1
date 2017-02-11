@@ -15,7 +15,6 @@
 #' @export
 #'
 
-
 PLSR_from_file = function(file, sample.names, sample.type, y.response, title = "PLSR",comps = 3, scale = F, comp.x = "comp.1", comp.y = "comp.2", labels = F){
   require(mixOmics)
   require(ggplot2)
@@ -23,10 +22,11 @@ PLSR_from_file = function(file, sample.names, sample.type, y.response, title = "
   data = data[rowSums((data[, -1] == 0)) < ncol(data[-1]), ] #remove genes with no variance
   rownames(data) = make.names(data[, 1], unique=TRUE)
   t.data = data.frame(t(data[, -1]))
-  y.response = (y.response[match(rownames(t.data), sample.names)])
+  y.response = (data.frame(y.response)[match(rownames(t.data), sample.names), ])
   y.response = as.matrix(y.response)
  
   pls.fit = pls(X = t.data, Y = y.response, scale = scale, ncomp = comps) 
+  print(pls.fit$explained_variance$X)
   
   x.variates = data.frame(pls.fit$variates$X)
   x.loadings = data.frame(pls.fit$loadings$X)

@@ -1,4 +1,4 @@
-#' Plot PCA projection and data points from original PCA
+#' Plot PCA projection and data points from original PCA with all colored in
 #' 
 #' Plots projection from rotated.scores file (output of intersect_do_PCA_and_project_second_dataset) on top of original data
 #' 
@@ -17,7 +17,8 @@
 #' @export
 #'
 
-plot_pca_projection = function(file, rotated.file, info.name, info.type, info.name2, info.type2, title = "Projection", labels = F, PCx="PC1", PCy="PC2"){
+
+plot_pca_projection_all = function(file, rotated.file, info.name, info.type, info.name2, info.type2, title = "Projection", labels = F, PCx="PC1", PCy="PC2"){
   require(ggplot2)
   pc.scores = read.table(file, header = TRUE, row.names = 1)
   pc.scores.reduced = pc.scores[, 1:5]
@@ -27,22 +28,17 @@ plot_pca_projection = function(file, rotated.file, info.name, info.type, info.na
   projected_data.reduced = projected_data[,1:5]
   projected_data.reduced$type = info.type2[match(rownames(projected_data.reduced), info.name2)]
   
-  pcx.y <- ggplot(projected_data.reduced, aes_string(x=PCx,y=PCy)) +geom_point(size = I(2), aes(color = factor(type))) +
+  combined.data = rbind(pc.scores.reduced, projected_data.reduced)
+  colnames(combined.data)[6] <-"type" 
+  
+  pcx.y <- ggplot(combined.data, aes_string(x=PCx,y=PCy)) +geom_point(size = I(2), aes(color = factor(type))) +
     theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
           legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
           axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
     guides(color=guide_legend(title="Type"))+
     labs(title = title)+
     theme_bw()+
-    if(labels==TRUE){geom_text(mapping = aes(label = rownames(projected_data.reduced)), check_overlap = TRUE, size = 3)}
-  
-  pcx.y <- pcx.y +geom_point(data=pc.scores.reduced, aes_string(x=PCx,y=PCy)) +geom_point(size = I(2), aes(color = factor(type))) +
-    theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
-          legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
-          axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
-    labs(title = title)+
-    theme_bw()
-  
+    if(labels==TRUE){geom_text(mapping = aes(label = rownames(combined.data)), check_overlap = TRUE, size = 3)}
   pcx.y
-  
+
 }

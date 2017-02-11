@@ -22,6 +22,7 @@ plot_pca_projection_only= function(rotated.file2, info.name, info.type, title = 
     theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
           legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
           axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
+    guides(color=guide_legend(title="Type"))+
     labs(title = title)+
     theme_bw()+
     if(labels==TRUE){geom_text(data = projected_data, mapping = aes(label = Sample), check_overlap = TRUE, size = 3)}

@@ -56,7 +56,7 @@ PLSR_from_file_and_predict_second_dataset = function(file, file2, sample.names, 
   
   rownames(data) = make.names(data[, 1], unique=TRUE)
   t.data = data.frame(t(data[, -1]))
-  y.response = (y.response[match(rownames(t.data), as.character(sample.names))])
+  y.response = (data.frame(y.response)[match(rownames(t.data), as.character(sample.names)), ])
   y.response = as.matrix(y.response)
   
   pls.fit = pls(X = t.data, Y = y.response, scale = scale, ncomp = comps) 
@@ -95,6 +95,7 @@ PLSR_from_file_and_predict_second_dataset = function(file, file2, sample.names, 
     theme(legend.position = "right", plot.title = element_text(size = 30), legend.text = element_text(size = 22),
           legend.title = element_text(size = 20), axis.title = element_text(size = 30), legend.background = element_rect(),
           axis.text.x = element_text(margin = margin(b = -2)), axis.text.y = element_text(margin = margin(l = -14))) +
+    guides(color=guide_legend(title="Type"))+
     labs(title = title) + theme_bw() +
     if (labels == TRUE) {
       geom_text(data = prediction, mapping = aes(label =(rownames(prediction))), check_overlap = TRUE, size = 3)

@@ -25,6 +25,7 @@ plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
     theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
           legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
           axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
+    guides(color=guide_legend(title="Type"))+
     labs(title = title)+
     theme_bw()+
     if(labels==TRUE){geom_text(data = table, mapping = aes(label = Score), check_overlap = TRUE, size = 3)}
