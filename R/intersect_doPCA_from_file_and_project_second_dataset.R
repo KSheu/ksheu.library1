@@ -23,8 +23,10 @@ intersect_doPCA_from_file_and_project_second_dataset=function(file,file2,train_s
   data1 = data1[rowSums((data1[,-1]==0))<ncol(data1[-1]),]
   
   common.genes <-intersect((data1[,1]), (data2[,1]))
-  data <-data1[(data1[,1]) %in% common.genes,]
-  data2 <-data2[(data2[,1]) %in% common.genes,]
+  # data <-data1[(data1[,1]) %in% common.genes,]
+  # data2 <-data2[(data2[,1]) %in% common.genes,]
+  data=data1[match(common.genes,data[,1]),]
+  data2=data2[match(common.genes,data2[,1]),]
   
   
   t.data=t(data[,-1])

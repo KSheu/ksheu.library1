@@ -24,8 +24,10 @@ PLSDA_from_file_and_predict_second_dataset = function(file, file2, sample.names,
   data2 = read.table(file2, sep='\t',header=T,stringsAsFactors=FALSE, quote = "")
   
   common.genes = intersect_all(data[,1], data2[,1])
-  data = data[data[,1] %in% common.genes, ]
-  data2 = data2[data2[,1] %in% common.genes, ]
+  # data = data[data[,1] %in% common.genes, ]
+  # data2 = data2[data2[,1] %in% common.genes, ]
+  data=data1[match(common.genes,data[,1]),]
+  data2=data2[match(common.genes,data2[,1]),]
   
   rownames(data) = data[,1]
   t.data = data.frame(t(data[,-1])) 
