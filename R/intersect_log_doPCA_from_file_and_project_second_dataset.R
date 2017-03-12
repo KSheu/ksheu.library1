@@ -25,10 +25,12 @@ intersect_log_doPCA_from_file_and_project_second_dataset=function(file,file2,tra
   
   #intersect
   common.genes <-intersect((data1[,1]), (data2[,1]))
-  # data <-data1[(data1[,1]) %in% common.genes,]
-  # data2 <-data2[(data2[,1]) %in% common.genes,]
-  data=data1[match(common.genes,data[,1]),]
-  data2=data2[match(common.genes,data2[,1]),]
+  data <-data1[(data1[,1]) %in% common.genes,]
+  data2 <-data2[(data2[,1]) %in% common.genes,]
+  data = data[order(data[,1]), ]
+  data2 = data2[order(data2[,1]), ]
+  # data=data1[match(common.genes,data[,1]),]
+  # data2=data2[match(common.genes,data2[,1]),]
   
   #log2(x+1)
   data = cbind("genename" = data[,1], log(data[,-1]+1, 2))#log2

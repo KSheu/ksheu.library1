@@ -15,7 +15,7 @@
 #' @export
 #'
 
-PLSR_from_file = function(file, sample.names, sample.type, y.response, title = "PLSR",comps = 3, scale = F, comp.x = "comp.1", comp.y = "comp.2", labels = F){
+PLSR_from_file = function(file, sample.names, sample.type, y.response, title = "PLSR",comps = 5, scale = F, comp.x = "comp.1", comp.y = "comp.2", labels = F){
   require(mixOmics)
   require(ggplot2)
   data = read.table(file, sep='\t',header=T,stringsAsFactors=FALSE, quote = "")
@@ -30,11 +30,14 @@ PLSR_from_file = function(file, sample.names, sample.type, y.response, title = "
   
   x.variates = data.frame(pls.fit$variates$X)
   x.loadings = data.frame(pls.fit$loadings$X)
+  x.exp_variance = data.frame(pls.fit$explained_variance$X)
   variates.X = cbind(Score = rownames(pls.fit$variates$X), x.variates)
   loadings.X = cbind(Loading = rownames(pls.fit$loadings$X), x.loadings)
+  rownames(x.exp_variance) = paste0("comp.",seq(1,nrow(x.exp_variance)))
   
   write.table(as.data.frame(variates.X), paste0(gsub(".txt", "", file), "_PLSR_Xscores.txt"), sep = "\t", row.names = F, quote = F)
   write.table(as.data.frame(loadings.X), paste0(gsub(".txt", "", file), "_PLSR_Xloadings.txt"), sep = "\t", row.names = F, quote = F)
+  write.table(as.data.frame(x.exp_variance), paste0(gsub(".txt", "", file), "_PLSR_Xpve.txt"), sep = "\t", row.names = T, quote = F)
   
   #plot it 
   # variates.X$type = sample.type[match(rownames(variates.X), sample.names)]

@@ -5,7 +5,7 @@
 \title{Partial Least Squares Reg from file}
 \usage{
 PLSR_from_file(file, sample.names, sample.type, y.response, title = "PLSR",
-  comps = 3, scale = F, comp.x = "comp.1", comp.y = "comp.2",
+  comps = 5, scale = F, comp.x = "comp.1", comp.y = "comp.2",
   labels = F)
 }
 \arguments{

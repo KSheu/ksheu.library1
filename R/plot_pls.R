@@ -1,6 +1,6 @@
-#' Plot PCA
+#' Plot PLS
 #' 
-#' Plots PCA from scores file (output of PCA_from_file)
+#' Plots PLS from scores file (output of PLSR_from_file)
 #' 
 #' @param file File containing scores matrix
 #' @param info.name Vector of sample names
@@ -15,18 +15,17 @@
 #' 
 #' @export
 #' 
-plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="PC1", PCy="PC2", ellipse = F, conf = 0.95){  
-  #Input: PCA scores file to be ploted
-  ##process pca output and adds groupings
+plot_pls = function(file, info.name, info.type, title = "", labels = TRUE, PCx="comp.1", PCy="comp.2", ellipse = F, conf = 0.95){  
+  #Input: PLSR scores file to be ploted
+  ##process PLS output and adds groupings
   require(ggplot2)
   require(vegan)
   table <- read.table(file, header = TRUE)
   table$type = info.type[match(table$Score, info.name)]
   
-  sdev = read.delim(paste0(gsub("scores.txt","",file),"sdev.txt"))
-  sdev$var = sdev^2
-  sdev$pve = round(sdev$var/sum(sdev$var) *100, digits = 2)
-  rownames(sdev) = paste0("PC",seq(1,nrow(sdev)))
+  exp_var = read.delim(paste0(gsub("scores.txt","",file),"pve.txt"), row.names = 1)
+  exp_var$pve = round(exp_var[,1] * 100, digits = 2)
+  
   
   
   pcx.y <- ggplot(table, aes_string(x=PCx,y=PCy)) +geom_point(size = I(2), aes(color = factor(type))) +
@@ -35,8 +34,8 @@ plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
           axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
     guides(color=guide_legend(title="Type"))+
     labs(title = title, 
-         x = paste0(PCx," (", sdev$pve[match(PCx, rownames(sdev))], "%)"),
-         y = paste0(PCy," (", sdev$pve[match(PCy, rownames(sdev))], "%)"))+
+         x = paste0(PCx," (", exp_var$pve[match(PCx, rownames(exp_var))], "%)"),
+         y = paste0(PCy," (", exp_var$pve[match(PCy, rownames(exp_var))], "%)"))+
     theme_bw()+
     if(labels==TRUE){geom_text(data = table, mapping = aes(label = Score), check_overlap = TRUE, size = 3)}
   

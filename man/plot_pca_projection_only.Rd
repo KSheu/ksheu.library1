@@ -5,7 +5,8 @@
 \title{Plot PCA projection only}
 \usage{
 plot_pca_projection_only(rotated.file2, info.name, info.type,
-  title = "Projection", labels = TRUE, PCx = "PC1", PCy = "PC2")
+  title = "Projection", labels = TRUE, PCx = "PC1", PCy = "PC2",
+  ellipse = F, conf = 0.95)
 }
 \arguments{
 \item{rotated.file2}{File containing scores matrix}
@@ -19,6 +20,10 @@ plot_pca_projection_only(rotated.file2, info.name, info.type,
 \item{labels}{default=T}
 
 \item{PCx, PCy}{PCs to display}
+
+\item{ellipse}{Construct confidence region based on groups in info.type, default = T}
+
+\item{conf}{default = 0.95}
 }
 \description{
 Plots projection from rotated.scores file (output of intersect_do_PCA_and_project_second_dataset)
