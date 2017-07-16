@@ -21,7 +21,7 @@ plot_pca_projection_only =function (rotated.file2, info.name, info.type, title =
   require(ggplot2)
   require(vegan)
   projected_data = read.delim(rotated.file2)
-  projected_data$type = info.type[match(projected_data$Sample, 
+  projected_data$type = info.type[match(projected_data[,1], 
                                         info.name)]
  
   pcx.y <- ggplot(projected_data, aes_string(x = PCx, y = PCy)) + 
