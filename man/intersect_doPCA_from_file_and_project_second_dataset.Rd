@@ -5,7 +5,7 @@
 \title{PCA from file and project second dataset}
 \usage{
 intersect_doPCA_from_file_and_project_second_dataset(file, file2, train_string,
-  center = TRUE, scale = FALSE)
+  center = TRUE, scale = FALSE, rank. = NULL)
 }
 \arguments{
 \item{file}{Filepath/filename of data matrix with no row numbering. Data file to do PCA on.}
@@ -17,6 +17,8 @@ intersect_doPCA_from_file_and_project_second_dataset(file, file2, train_string,
 \item{center}{default=T}
 
 \item{scale}{default=F}
+
+\item{rank.}{number specifying the maximal number of PCs}
 }
 \description{
 Reads two files with samples in columns and variables in rows. Intersect the common variables. Do PCA on file and project file2 onto this PCA. 

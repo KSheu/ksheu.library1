@@ -11,21 +11,36 @@
 #' @param title Title of the plot
 #' @param labels default=T
 #' @param PCx,PCy PCs to display
+#' @param ellipse Construct confidence region based on groups in info.type, default = T
+#' @param conf default = 0.95 
+#' @param fliph,flipv flip plot hoirzontally or vertically
+#' @param save save plot as png
+#' @param savename name of file saved
 #' 
+# @importFrom(grDevices,dev.off,png)
+# @importFrom(graphics,plot)
+# @importFrom(stats,na.omit,predict,varimax)
 # @importFrom ggplot2 ggplot aes aes_string element_rect element_text geom_point geom_text labs margin theme theme_bw
 #' 
 #' @export
 #'
 
-plot_pca_projection = function(file, rotated.file, info.name, info.type, info.name2, info.type2, title = "Projection", labels = F, PCx="PC1", PCy="PC2"){
-  require(ggplot2)
+plot_pca_projection = function(file, rotated.file, info.name, info.type, info.name2, info.type2, title = "Projection", 
+                               labels = F, PCx="PC1", PCy="PC2", ellipse = F, conf = 0.95, fliph = F, flipv = F, save = F, savename = "") {
+  require(ggplot2);require(vegan)
   pc.scores = read.table(file, header = TRUE, row.names = 1)
-  pc.scores.reduced = pc.scores[, 1:5]
+  pc.scores.reduced = pc.scores
   pc.scores.reduced$type = info.type[match(rownames(pc.scores.reduced), info.name)]
+  if (fliph==T){pc.scores.reduced[,PCx] = pc.scores.reduced[,PCx]*-1}
+  if (flipv==T){pc.scores.reduced[,PCy] = pc.scores.reduced[,PCy]*-1}
   
-  projected_data = read.table(rotated.file,header = T, row.names = 1)
-  projected_data.reduced = projected_data[,1:5]
-  projected_data.reduced$type = info.type2[match(rownames(projected_data.reduced), info.name2)]
+  projected_data = read.table(rotated.file,header = T)
+  projected_data.reduced = projected_data
+  projected_data.reduced$type = info.type2[match((projected_data.reduced[,1]), info.name2)]
+  if (fliph==T){projected_data.reduced[,PCx] = projected_data.reduced[,PCx]*-1}
+  if (flipv==T){projected_data.reduced[,PCy] = projected_data.reduced[,PCy]*-1}
+  
+  # projected_data.reduced = na.omit(projected_data.reduced)
   
   pcx.y <- ggplot(projected_data.reduced, aes_string(x=PCx,y=PCy)) +geom_point(size = I(2), aes(color = factor(type))) +
     theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
@@ -43,6 +58,40 @@ plot_pca_projection = function(file, rotated.file, info.name, info.type, info.na
     labs(title = title)+
     theme_bw()
   
-  pcx.y
+  if(ellipse==TRUE){
+    plot(projected_data.reduced[,c(PCx, PCy)], main=title)
+    ord = ordiellipse(projected_data.reduced[,c(PCx, PCy)],projected_data.reduced$type, kind = "sd", conf = conf) 
+    
+    cov_ellipse<-function (cov, center = c(0, 0), scale = 1, npoints = 100) 
+    {
+      theta <- (0:npoints) * 2 * pi/npoints
+      Circle <- cbind(cos(theta), sin(theta))
+      t(center + scale * t(Circle %*% chol(cov)))
+    }
+    
+    df_ell <- data.frame(matrix(ncol = 0, nrow = 0))
+    for(g in (droplevels(projected_data.reduced$type))){
+      df_ell <- rbind(df_ell, cbind(as.data.frame(with(projected_data.reduced[projected_data.reduced$type==g,],
+                                                       cov_ellipse(ord[[g]]$cov,ord[[g]]$center,ord[[g]]$scale)))
+                                    ,type=g))
+    }
+    
+    pcx.y2 = pcx.y + geom_path(data=df_ell, aes(x=df_ell[,PCx], y=df_ell[,PCy], colour = type), size=1, linetype=1)
+    pcx.y2
+    if(save ==T){
+      png(paste0(savename,".png"), width=8, height=8, units="in", res=300)
+      plot( pcx.y2)
+      dev.off()
+      (pcx.y2)
+    }else{pcx.y2}
+  }else{
+    if(save ==T){
+      png(paste0(savename,".png"), width=8, height=8, units="in", res=300)
+      plot( pcx.y)
+      dev.off()
+    }
+    pcx.y
+  }
+  
   
 }

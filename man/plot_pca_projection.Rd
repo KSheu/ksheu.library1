@@ -6,7 +6,8 @@
 \usage{
 plot_pca_projection(file, rotated.file, info.name, info.type, info.name2,
   info.type2, title = "Projection", labels = F, PCx = "PC1",
-  PCy = "PC2")
+  PCy = "PC2", ellipse = F, conf = 0.95, fliph = F, flipv = F,
+  save = F, savename = "")
 }
 \arguments{
 \item{file}{scores file of original data}
@@ -26,6 +27,16 @@ plot_pca_projection(file, rotated.file, info.name, info.type, info.name2,
 \item{labels}{default=T}
 
 \item{PCx, PCy}{PCs to display}
+
+\item{ellipse}{Construct confidence region based on groups in info.type, default = T}
+
+\item{conf}{default = 0.95}
+
+\item{fliph, flipv}{flip plot hoirzontally or vertically}
+
+\item{save}{save plot as png}
+
+\item{savename}{name of file saved}
 }
 \description{
 Plots projection from rotated.scores file (output of intersect_do_PCA_and_project_second_dataset) on top of original data

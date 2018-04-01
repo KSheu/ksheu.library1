@@ -5,7 +5,8 @@
 \title{Plot PCA}
 \usage{
 plot_pca(file, info.name, info.type, title = "", labels = TRUE,
-  PCx = "PC1", PCy = "PC2", ellipse = F, conf = 0.95)
+  PCx = "PC1", PCy = "PC2", ellipse = F, conf = 0.95, density = F,
+  fliph = F, flipv = F)
 }
 \arguments{
 \item{file}{File containing scores matrix}
@@ -23,6 +24,10 @@ plot_pca(file, info.name, info.type, title = "", labels = TRUE,
 \item{ellipse}{Construct confidence region based on groups in info.type, default = T}
 
 \item{conf}{default = 0.95}
+
+\item{density}{plot x-y density plots}
+
+\item{fliph, flipv}{flip plot hoirzontally or vertically}
 }
 \description{
 Plots PCA from scores file (output of PCA_from_file)

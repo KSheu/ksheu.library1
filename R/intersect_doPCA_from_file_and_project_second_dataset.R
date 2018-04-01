@@ -8,6 +8,7 @@
 #' @param train_string String to insert into filename of rotated scores
 #' @param center default=T
 #' @param scale default=F
+#' @param rank. number specifying the maximal number of PCs
 #' 
 #' @importFrom stats prcomp screeplot
 #' @importFrom utils read.delim read.table write.table
@@ -15,10 +16,11 @@
 #' @export
 #' 
 
-intersect_doPCA_from_file_and_project_second_dataset=function(file,file2,train_string,center=TRUE,scale=FALSE) {
+intersect_doPCA_from_file_and_project_second_dataset=function(file,file2,train_string,center=TRUE,scale=FALSE,rank.=NULL) {
   data1=read.delim(file, header = T, stringsAsFactors = F)
   data2=read.delim(file2, header = T, stringsAsFactors = F)
-  
+  data1 = data1[!duplicated(data1[,1]),]#needed if data has duplicates
+  data2 = data2[!duplicated(data2[,1]),]
   #remove rows that are all 0
   data1 = data1[rowSums((data1[,-1]==0))<ncol(data1[-1]),]
   
@@ -34,7 +36,7 @@ intersect_doPCA_from_file_and_project_second_dataset=function(file,file2,train_s
   t.data=t(data[,-1])
   #t.data = t(data) #if genenames inrownames
   
-  pca<-prcomp(t.data,scale=scale,center=center)
+  pca<-prcomp(t.data,scale=scale,center=center, rank.=rank.)
   pca_scores=pca$x
   pca_scores=cbind("Score"=rownames(pca_scores),pca_scores)
   pca_loadings=pca$rotation

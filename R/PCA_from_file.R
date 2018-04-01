@@ -5,6 +5,8 @@
 #' @param file Filepath/filename of data matrix
 #' @param center default=T
 #' @param scale default=F
+#' @param rank. number specifying the maximal number of PCs
+#' @param fread default=F, use fread for large input files
 #' 
 #' @importFrom stats prcomp screeplot
 #' @importFrom utils read.delim read.table write.table
@@ -13,7 +15,23 @@
 #' 
 
 
-PCA_from_file=function(file,center=TRUE,scale=FALSE) {
+PCA_from_file=function(file,center=TRUE,scale=FALSE, rank. = NULL, fread = FALSE) {
+  require(data.table)
+  if(fread==T){
+    data = fread(file)
+    data= data[rowSums((data[,-1, with=F]==0))<ncol(data[-1]),]
+    t.data=t(data[,-1, with = F]) ##subtract off the gene name
+    
+    pca<-prcomp(t.data,scale=scale,center=center, rank.=rank.);
+    pca_scores=pca$x
+    pca_scores=cbind("Score"=gsub("-",".",rownames(pca_scores)),pca_scores)
+    pca_loadings=pca$rotation
+    #pca_loadings=cbind("Loading"=rownames(pca_loadings),pca_loadings)#if genenames in rownames
+    pca_loadings=cbind("Loading"=data[,1,with=F],pca_loadings)#if genenames not in rownames
+    pca_evalues=pca$sdev
+    
+  }else{
+    
   data=read.delim(file, header = T, stringsAsFactors = F)
   
   #remove rows that are all 0
@@ -21,6 +39,7 @@ PCA_from_file=function(file,center=TRUE,scale=FALSE) {
   
   #t.data = t(data) #if genenames in rownames
   t.data=t(data[,-1]) ##subtract off the gene name
+  
   pca<-prcomp(t.data,scale=scale,center=center);
   pca_scores=pca$x
   pca_scores=cbind("Score"=rownames(pca_scores),pca_scores)
@@ -29,6 +48,7 @@ PCA_from_file=function(file,center=TRUE,scale=FALSE) {
   pca_loadings=cbind("Loading"=data[,1],pca_loadings)#if genenames not in rownames
   pca_evalues=pca$sdev
   
+  }
   
   #save data
   name=sub(".txt","",file)

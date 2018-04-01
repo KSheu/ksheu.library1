@@ -10,18 +10,23 @@
 #' @param PCx,PCy PCs to display
 #' @param ellipse Construct confidence region based on groups in info.type, default = T
 #' @param conf default = 0.95 
+#' @param density plot x-y density plots
+#' @param fliph,flipv flip plot hoirzontally or vertically
 #' 
 # @importFrom ggplot2 ggplot aes aes_string element_rect element_text geom_point geom_text labs margin theme theme_bw
 #' 
 #' @export
 #' 
-plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="PC1", PCy="PC2", ellipse = F, conf = 0.95){  
+plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="PC1", PCy="PC2", ellipse = F, conf = 0.95, density=F,
+                    fliph = F, flipv = F){  
   #Input: PCA scores file to be ploted
   ##process pca output and adds groupings
-  require(ggplot2)
+  require(ggplot2);require(ggpubr)
   require(vegan)
   table <- read.table(file, header = TRUE)
   table$type = info.type[match(table$Score, info.name)]
+  if (fliph==T){table[,PCx] = table[,PCx]*-1}
+  if (flipv==T){table[,PCy] = table[,PCy]*-1}
   
   sdev = read.delim(paste0(gsub("scores.txt","",file),"sdev.txt"))
   sdev$var = sdev^2
@@ -29,7 +34,7 @@ plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
   rownames(sdev) = paste0("PC",seq(1,nrow(sdev)))
   
   
-  pcx.y <- ggplot(table, aes_string(x=PCx,y=PCy)) +geom_point(size = I(2), aes(color = factor(type))) +
+  pcx.y <- ggplot(table, aes_string(x=PCx,y=PCy)) +geom_point(size = I(3), aes(color = factor(type))) +
     theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
           legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
           axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
@@ -60,9 +65,39 @@ plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
     }
     
     pcx.y2 = pcx.y + geom_path(data=df_ell, aes(x=df_ell[,PCx], y=df_ell[,PCy], colour = type), size=1, linetype=1)
-    pcx.y2
+    print(pcx.y2)
+    # if(density==TRUE){
+    #   
+    #   # Marginal density plot of x (top panel) and y (right panel)
+    #   xplot <- ggdensity(table, PCx, fill = "type")+ clean_theme()
+    #   yplot <- ggdensity(table, PCy, fill = "type")+ rotate()+ clean_theme()
+    #   # Arranging the plot
+    #   print(ggarrange(xplot, NULL, pcx.y2, yplot, 
+    #                   ncol = 2, nrow = 2,  align = "hv", 
+    #                   widths = c(2, 1), heights = c(1, 2),
+    #                   common.legend = TRUE))
+    # }
+    # else{
+    #   print(pcx.y2)
+    # }
+    # 
   } else{
-    pcx.y
+    print(pcx.y)
   }
+  if(density==TRUE){
+
+    # Marginal density plot of x (top panel) and y (right panel)
+    xplot <- ggdensity(table, PCx, fill = "type")+ clean_theme()
+    yplot <- ggdensity(table, PCy, fill = "type")+ rotate()+ clean_theme()
+       # Arranging the plot
+    (ggarrange(xplot, NULL, pcx.y, yplot,
+              ncol = 2, nrow = 2,  align = "hv",
+              widths = c(2, 1), heights = c(1, 2),
+              common.legend = TRUE))
+  }
+  else{
+    print(pcx.y2)
+  }
+
   
 }  
