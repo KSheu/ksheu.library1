@@ -7,7 +7,7 @@
 PLSR_from_file_and_predict_second_dataset(file, file2, sample.names,
   sample.type, y.response, sample.names2 = NULL, sample.type2 = NULL,
   train_string, title = "PLSR", comp.x = "comp.1", comp.y = "comp.2",
-  comps = 3, scale = F, labels = F)
+  comps = 3, scale = F, labels = F, fread = FALSE)
 }
 \arguments{
 \item{file}{file for X matirx}
@@ -33,6 +33,8 @@ PLSR_from_file_and_predict_second_dataset(file, file2, sample.names,
 \item{scale}{default=T}
 
 \item{labels}{label the plot, default = T}
+
+\item{fread}{default=F, use fread for large input files}
 
 \item{comp}{number of components to compute}
 }

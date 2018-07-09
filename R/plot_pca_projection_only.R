@@ -39,7 +39,7 @@ plot_pca_projection_only =function (rotated.file2, info.name, info.type, title =
     guides(color = guide_legend(title = "Type")) + labs(title = title) + 
     # coord_equal(ratio=1) +
     theme_bw() + if (labels == TRUE) {
-      geom_text(data = projected_data, mapping = aes(label = Sample), 
+      geom_text(data = projected_data, mapping = aes(label = rownames(projected_data)), 
                 check_overlap = TRUE, size = 3)
     }
   

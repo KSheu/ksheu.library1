@@ -1,7 +1,7 @@
-Package: ksheu.lib
-Title: KSheu Lib
+Package: ksheu.library1
+Title: KSheu Library1
 Version: 0.0.0.9000
-Authors@R: person("Katherine", "Sheu", email = "first.last@example.com", role = c("aut", "cre"))
+Authors@R: person("Katherine", "Sheu", email = "ksheu@mednet.ucla.edu", role = c("aut", "cre"))
 Description: Useful functions.
 Depends:
     R (>= 3.3.2)

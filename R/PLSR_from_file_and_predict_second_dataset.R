@@ -13,6 +13,7 @@
 #' @param labels label the plot, default = T
 #' @param comp.x,comp.y comps to display
 #' @param title title of the plot
+#' @param fread default=F, use fread for large input files
 #' 
 #' @param file2 file for test data matrix
 #' @param sample.names2 Vector of sample names in 2nd dataset, if needed
@@ -38,8 +39,29 @@
 # sample.type2 = info$type
 # train_string = "tofile1"
 PLSR_from_file_and_predict_second_dataset = function(file, file2, sample.names, sample.type, y.response, sample.names2=NULL, sample.type2=NULL, train_string,
-                                                     title = "PLSR", comp.x = "comp.1", comp.y = "comp.2",comps = 3, scale = F, labels = F){
+                                                     title = "PLSR", comp.x = "comp.1", comp.y = "comp.2",comps = 3, scale = F, labels = F, fread = FALSE){
   require(mixOmics)
+  if(fread==T){
+    data = fread(file)
+    data = data[rowSums((data[, -1,with=F] == 0)) < ncol(data[-1]), ] #remove genes with no variance
+    data2 = fread(file2)
+    #data2 = data2[rowSums((data2[, -1] == 0)) < ncol(data2[-1]), ] #remove genes with no variance
+    
+    data = data[!duplicated(data[,1,with=F]), ]
+    data2 = data2[!duplicated(data2[,1,with=F]), ]
+    
+    common.genes = intersect_all(data[,1,with=F], data2[,1,with=F])
+    data = data[data[,1,with=F] %in% common.genes, ]
+    data2 = data2[data2[,1,with=F] %in% common.genes, ]
+    data = data[order(data[,1,with=F]), ]
+    data2 = data2[order(data2[,1,with=F]), ]
+    
+    rownames(data) = make.names(data[, 1], unique=TRUE)
+    t.data = data.frame(t(data[, -1,with=F]))
+    y.response = (data.frame(y.response)[match(rownames(t.data), as.character(sample.names)), ])
+    y.response = as.matrix(y.response)
+  }
+  else{
   data = read.table(file, sep='\t',header=T,stringsAsFactors=FALSE, quote = "")
   data = data[rowSums((data[, -1] == 0)) < ncol(data[-1]), ] #remove genes with no variance
   data2 = read.table(file2, sep='\t',header=T,stringsAsFactors=FALSE, quote = "")
@@ -58,6 +80,7 @@ PLSR_from_file_and_predict_second_dataset = function(file, file2, sample.names, 
   t.data = data.frame(t(data[, -1]))
   y.response = (data.frame(y.response)[match(rownames(t.data), as.character(sample.names)), ])
   y.response = as.matrix(y.response)
+  }
   
   pls.fit = pls(X = t.data, Y = y.response, scale = scale, ncomp = comps) 
   

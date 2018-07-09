@@ -21,7 +21,7 @@ varimax_from_file = function(file.scores, file.loadings, comp=2, normalize = T){
   org.scores = read.delim(file.scores)
   
   rotation = varimax(as.matrix(org.loadings[, c(2:(comp+1))]), normalize = normalize) 
-  rot.load = as.data.frame(matrix(unlist(rotation$loadings), ncol=2, byrow=F))
+  rot.load = as.data.frame(matrix(unlist(rotation$loadings), ncol=comp, byrow=F))
   rot.load = cbind(Loading = org.loadings[,1], rot.load)
   write.table(rot.load, paste0(gsub(".txt", "", file.loadings), "_VARIMAX.txt"), row.names = F, sep = "\t", quote = F)
   

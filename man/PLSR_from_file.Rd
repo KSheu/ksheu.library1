@@ -6,7 +6,7 @@
 \usage{
 PLSR_from_file(file, sample.names, sample.type, y.response, title = "PLSR",
   comps = 5, scale = F, comp.x = "comp.1", comp.y = "comp.2",
-  labels = F)
+  labels = F, fread = F)
 }
 \arguments{
 \item{file}{file for X matrix}
@@ -24,6 +24,8 @@ PLSR_from_file(file, sample.names, sample.type, y.response, title = "PLSR",
 \item{comp.x, comp.y}{comps to display}
 
 \item{labels}{label the plot, default = F}
+
+\item{fread}{defaylt = F}
 
 \item{comp}{number of components to compute}
 }

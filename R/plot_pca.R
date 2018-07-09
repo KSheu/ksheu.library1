@@ -96,7 +96,7 @@ plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
               common.legend = TRUE))
   }
   else{
-    print(pcx.y2)
+    print(pcx.y)
   }
 
   

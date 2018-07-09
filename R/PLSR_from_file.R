@@ -11,13 +11,43 @@
 #' @param labels label the plot, default = F
 #' @param comp.x,comp.y comps to display
 #' @param title title of the plot
+#' @param fread defaylt = F
 #' 
 #' @export
 #'
 
-PLSR_from_file = function(file, sample.names, sample.type, y.response, title = "PLSR",comps = 5, scale = F, comp.x = "comp.1", comp.y = "comp.2", labels = F){
+PLSR_from_file = function(file, sample.names, sample.type, y.response, title = "PLSR",comps = 5, scale = F, comp.x = "comp.1", comp.y = "comp.2", labels = F, fread = F){
   require(mixOmics)
   require(ggplot2)
+  if (fread == T) {
+    data = fread(file)
+    data = data[rowSums((data[, -1, with = F] == 0)) < ncol(data[-1]), 
+                ]
+    t.data = t(data[, -1, with = F])
+    colnames(t.data) = data$gene
+    y.response = (data.frame(y.response)[match(rownames(t.data), sample.names), ])
+    y.response = as.matrix(y.response)
+    
+    pls.fit = pls(X = t.data, Y = y.response, scale = scale, ncomp = comps) 
+    print(pls.fit$explained_variance$X)
+    
+    # #do CV
+    # set.seed(1) # for reproducibility here, only when the `cpus' argument is not used
+    # perf.pls = perf(pls.fit, validation = "loo", #folds = 5, 
+    #                    progressBar = TRUE, auc = TRUE, nrepeat = 1) 
+    # print(perf.pls$error.rate)  # error rates
+    # plot(perf.pls, col = color.mixo(1:3), sd = TRUE, legend.position = "horizontal")
+    
+    #write out
+    x.variates = data.frame(pls.fit$variates$X)
+    x.loadings = data.frame(pls.fit$loadings$X)
+    x.exp_variance = data.frame(pls.fit$explained_variance$X)
+    variates.X = cbind(Score = rownames(pls.fit$variates$X), x.variates)
+    loadings.X = cbind(Loading = rownames(pls.fit$loadings$X), x.loadings)
+    rownames(x.exp_variance) = paste0("comp.",seq(1,nrow(x.exp_variance)))
+    
+  }
+  else {
   data = read.table(file, sep='\t',header=T,stringsAsFactors=FALSE, quote = "")
   data = data[rowSums((data[, -1] == 0)) < ncol(data[-1]), ] #remove genes with no variance
   rownames(data) = make.names(data[, 1], unique=TRUE)
@@ -28,13 +58,21 @@ PLSR_from_file = function(file, sample.names, sample.type, y.response, title = "
   pls.fit = pls(X = t.data, Y = y.response, scale = scale, ncomp = comps) 
   print(pls.fit$explained_variance$X)
   
+  # #do CV
+  # set.seed(1) # for reproducibility here, only when the `cpus' argument is not used
+  # perf.pls = perf(pls.fit, validation = "Mfold", folds = 5, 
+  #                 progressBar = TRUE, auc = TRUE, nrepeat = 10) 
+  # print(perf.pls$error.rate)  # error rates
+  # plot(perf.pls, col = color.mixo(1:3), sd = TRUE, legend.position = "horizontal")
+  # 
+  #write out
   x.variates = data.frame(pls.fit$variates$X)
   x.loadings = data.frame(pls.fit$loadings$X)
   x.exp_variance = data.frame(pls.fit$explained_variance$X)
   variates.X = cbind(Score = rownames(pls.fit$variates$X), x.variates)
   loadings.X = cbind(Loading = rownames(pls.fit$loadings$X), x.loadings)
   rownames(x.exp_variance) = paste0("comp.",seq(1,nrow(x.exp_variance)))
-  
+  }
   write.table(as.data.frame(variates.X), paste0(gsub(".txt", "", file), "_PLSR_Xscores.txt"), sep = "\t", row.names = F, quote = F)
   write.table(as.data.frame(loadings.X), paste0(gsub(".txt", "", file), "_PLSR_Xloadings.txt"), sep = "\t", row.names = F, quote = F)
   write.table(as.data.frame(x.exp_variance), paste0(gsub(".txt", "", file), "_PLSR_Xpve.txt"), sep = "\t", row.names = T, quote = F)
