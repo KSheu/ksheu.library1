@@ -2,7 +2,8 @@
 % Please edit documentation in R/varimax_from_file.R
 \name{varimax_from_file}
 \alias{varimax_from_file}
-\title{Varimax rotation from file}
+\title{Varimax rotation from file
+Last mod: 4/2018, ksheu}
 \usage{
 varimax_from_file(file.scores, file.loadings, comp = 2, normalize = T)
 }

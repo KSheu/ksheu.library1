@@ -2,7 +2,8 @@
 % Please edit documentation in R/PLSR_from_file.R
 \name{PLSR_from_file}
 \alias{PLSR_from_file}
-\title{Partial Least Squares Reg from file}
+\title{Partial Least Squares Regression from file
+Last mod: 6/17/18, ksheu}
 \usage{
 PLSR_from_file(file, sample.names, sample.type, y.response, title = "PLSR",
   comps = 5, scale = F, comp.x = "comp.1", comp.y = "comp.2",
@@ -30,6 +31,7 @@ PLSR_from_file(file, sample.names, sample.type, y.response, title = "PLSR",
 \item{comp}{number of components to compute}
 }
 \description{
-Writes out loadings
+Writes out Xscores, Xloadings, and PVE.
+Plot scores output with plot_pls()
 }
 

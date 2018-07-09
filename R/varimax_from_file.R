@@ -1,5 +1,5 @@
-
 #' Varimax rotation from file
+#' Last mod: 4/2018, ksheu
 #'
 #' Writes out Varimax rotated loadings and scores 
 #'

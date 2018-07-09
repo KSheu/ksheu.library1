@@ -1,6 +1,8 @@
-#'Partial Least Squares Reg from file
-#'
-#' Writes out loadings
+#' Partial Least Squares Regression from file
+#' Last mod: 6/17/18, ksheu
+#' 
+#' Writes out Xscores, Xloadings, and PVE.
+#' Plot scores output with plot_pls()
 #'
 #' @param file file for X matrix
 #' @param sample.names vector of names of the samples
