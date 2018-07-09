@@ -1,2 +1,2 @@
-# ksheu.lib
-Useful functions
+# ksheu.library1
+Useful functions and plotting
