@@ -5,7 +5,7 @@
 #' @param file Filepath/filename of data matrix
 #' @param center default=T
 #' @param scale default=F
-#' @param rank. number specifying the maximal number of PCs
+#' @param tol number specifying magnitude below which comps should be ommited
 #' @param fread default=F, use fread for large input files
 #' 
 #' @importFrom stats prcomp screeplot
@@ -15,14 +15,14 @@
 #' 
 
 
-PCA_from_file=function(file,center=TRUE,scale=FALSE, rank. = NULL, fread = FALSE) {
+PCA_from_file=function(file,center=TRUE,scale=FALSE, fread = FALSE, tol = sqrt(.Machine$double.eps)) {
   require(data.table)
   if(fread==T){
     data = fread(file)
     data= data[rowSums((data[,-1, with=F]==0))<ncol(data[-1]),]
     t.data=t(data[,-1, with = F]) ##subtract off the gene name
     
-    pca<-prcomp(t.data,scale=scale,center=center, rank.=rank.);
+    pca<-prcomp(t.data,scale=scale,center=center, tol = tol);
     pca_scores=pca$x
     pca_scores=cbind("Score"=gsub("-",".",rownames(pca_scores)),pca_scores)
     pca_loadings=pca$rotation

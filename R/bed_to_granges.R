@@ -8,8 +8,10 @@
 #' @param file Location of your file
 #' @keywords BED GRanges
 #' @export
-#' @examples
-#' bed_to_granges('my_bed_file.bed')
+#' 
+
+
+# bed_to_granges('my_bed_file.bed')
 
 bed_to_granges <- function(file){
   df <- read.table(file,

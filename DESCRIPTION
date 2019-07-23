@@ -2,10 +2,10 @@ Package: ksheu.library1
 Title: KSheu Library1
 Version: 0.0.0.9000
 Authors@R: person("Katherine", "Sheu", email = "ksheu@mednet.ucla.edu", role = c("aut", "cre"))
-Description: Useful functions.
+Description: Useful functions. Tested compatilbility with R version >=3.5.3.  Install with: library("devtools"); install_github("ksheu/ksheu.library1");library(ksheu.library1)
 Depends:
     R (>= 3.3.2)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.1

@@ -4,12 +4,12 @@
 \alias{plot_pca_projection_and_save}
 \title{Plot PCA projection with save option}
 \usage{
-plot_pca_projection_and_save(scores.file, info.name, info.type, PCx = "PC1",
-  PCy = "PC2", factor.levels = levels(info.type), aes_fill = NULL,
-  savename, savePlot = F, width = 3, height = 2, title = "",
-  label = F, savetype = ".pdf", w = 6, h = 3, aspect.ratio = 0.8,
-  legend = F, legendname = "default", colors = colpalette[1:4],
-  psize = 2.5, plotLabelname = "none")
+plot_pca_projection_and_save(scores.file, info.name, info.type,
+  PCx = "PC1", PCy = "PC2", factor.levels = levels(info.type),
+  aes_fill = NULL, savename, savePlot = F, width = 3, height = 2,
+  title = "", label = F, savetype = ".pdf", w = 6, h = 3,
+  aspect.ratio = 0.8, legend = F, legendname = "default",
+  colors = colpalette[1:4], psize = 2.5, plotLabelname = "none")
 }
 \arguments{
 \item{scores.file}{PCA score file (scores file, output of PCA_from_file)}
@@ -41,4 +41,3 @@ plot_pca_projection_and_save(scores.file, info.name, info.type, PCx = "PC1",
 \description{
 Plot PCA projection with save option
 }
-

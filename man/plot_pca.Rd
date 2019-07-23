@@ -5,8 +5,8 @@
 \title{Plot PCA}
 \usage{
 plot_pca(file, info.name, info.type, title = "", labels = TRUE,
-  PCx = "PC1", PCy = "PC2", ellipse = F, conf = 0.95, density = F,
-  fliph = F, flipv = F)
+  PCx = "PC1", PCy = "PC2", ellipse = F, conf = 0.95,
+  density = F, fliph = F, flipv = F)
 }
 \arguments{
 \item{file}{File containing scores matrix}
@@ -32,4 +32,3 @@ plot_pca(file, info.name, info.type, title = "", labels = TRUE,
 \description{
 Plots PCA from scores file (output of PCA_from_file)
 }
-

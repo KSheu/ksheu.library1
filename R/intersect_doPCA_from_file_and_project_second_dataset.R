@@ -8,7 +8,7 @@
 #' @param train_string String to insert into filename of rotated scores
 #' @param center default=T
 #' @param scale default=F
-#' @param rank. number specifying the maximal number of PCs
+#' @param fread default=F, use fread for large input files
 #' 
 #' @importFrom stats prcomp screeplot
 #' @importFrom utils read.delim read.table write.table
@@ -16,7 +16,26 @@
 #' @export
 #' 
 
-intersect_doPCA_from_file_and_project_second_dataset=function(file,file2,train_string,center=TRUE,scale=FALSE,rank.=NULL) {
+intersect_doPCA_from_file_and_project_second_dataset=function(file,file2,train_string,center=TRUE,scale=FALSE,fread=F) {
+  if(fread==T){
+    data1 = fread(file)
+    data1 = data[rowSums((data1[, -1,with=F] == 0)) < ncol(data1[-1]), ] #remove genes with no variance
+    data2 = fread(file2)
+    #data2 = data2[rowSums((data2[, -1] == 0)) < ncol(data2[-1]), ] #remove genes with no variance
+    
+    data1 = data1[!duplicated(data1[,1,with=F]), ]
+    data2 = data2[!duplicated(data2[,1,with=F]), ]
+    
+    common.genes = intersect_all(data[,1,with=F], data2[,1,with=F])
+    data1 = data1[data1[,1,with=F] %in% common.genes, ]
+    data2 = data2[data2[,1,with=F] %in% common.genes, ]
+    data1 = data1[order(data1[,1,with=F]), ]
+    data2 = data2[order(data2[,1,with=F]), ]
+    
+    rownames(data1) = make.names(data1[, 1], unique=TRUE)
+    t.data = data.frame(t(data1[, -1,with=F]))
+  }
+  else{
   data1=read.delim(file, header = T, stringsAsFactors = F)
   data2=read.delim(file2, header = T, stringsAsFactors = F)
   data1 = data1[!duplicated(data1[,1]),]#needed if data has duplicates
@@ -35,8 +54,9 @@ intersect_doPCA_from_file_and_project_second_dataset=function(file,file2,train_s
   
   t.data=t(data[,-1])
   #t.data = t(data) #if genenames inrownames
+  }
   
-  pca<-prcomp(t.data,scale=scale,center=center, rank.=rank.)
+  pca<-prcomp(t.data,scale=scale,center=center)
   pca_scores=pca$x
   pca_scores=cbind("Score"=rownames(pca_scores),pca_scores)
   pca_loadings=pca$rotation

@@ -34,8 +34,8 @@ plot_pls = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
   }
   
   exp_var = read.delim(paste0(gsub("scores.txt","",file),"pve.txt"), row.names = 1)
-  exp_var$pve = round(exp_var[,1] * 100, digits = 2)
-  
+  exp_var$pve =  unlist(round(exp_var[,1] * 100, digits = 2))
+  rownames(exp_var) = paste0("comp.",seq(1,nrow(exp_var)))
   
   
   pcx.y <- ggplot(table, aes_string(x=PCx,y=PCy)) +geom_point(size = I(3), aes(color = factor(type))) +
@@ -46,7 +46,7 @@ plot_pls = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
     labs(title = title, 
          x = paste0(PCx," (", exp_var$pve[match(PCx, rownames(exp_var))], "%)"),
          y = paste0(PCy," (", exp_var$pve[match(PCy, rownames(exp_var))], "%)"))+
-    theme_bw()+
+    theme_bw(base_size=18)+
     if(labels==TRUE){geom_text(data = table, mapping = aes(label = Score), check_overlap = TRUE, size = 3)}
   
   

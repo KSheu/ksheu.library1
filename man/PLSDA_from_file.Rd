@@ -4,8 +4,8 @@
 \alias{PLSDA_from_file}
 \title{Partial Least Squares from file}
 \usage{
-PLSDA_from_file(file, sample.names, response.values, comps = 2, scale = F,
-  ind.names = F)
+PLSDA_from_file(file, sample.names, response.values, comps = 2,
+  scale = F, ind.names = F)
 }
 \arguments{
 \item{file}{file for X matirx}
@@ -21,4 +21,3 @@ PLSDA_from_file(file, sample.names, response.values, comps = 2, scale = F,
 \description{
 Writes out loadings
 }
-

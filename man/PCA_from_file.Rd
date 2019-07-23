@@ -4,8 +4,8 @@
 \alias{PCA_from_file}
 \title{PCA from file}
 \usage{
-PCA_from_file(file, center = TRUE, scale = FALSE, rank. = NULL,
-  fread = FALSE)
+PCA_from_file(file, center = TRUE, scale = FALSE, fread = FALSE,
+  tol = sqrt(.Machine$double.eps))
 }
 \arguments{
 \item{file}{Filepath/filename of data matrix}
@@ -14,11 +14,10 @@ PCA_from_file(file, center = TRUE, scale = FALSE, rank. = NULL,
 
 \item{scale}{default=F}
 
-\item{rank.}{number specifying the maximal number of PCs}
-
 \item{fread}{default=F, use fread for large input files}
+
+\item{tol}{number specifying magnitude below which comps should be ommited}
 }
 \description{
 Reads file with samples in columns and variables in rows, and does PCA. Writes to file scores, loadings, eigenvalues.
 }
-

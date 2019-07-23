@@ -14,4 +14,3 @@ make_loadings_gctfile(file, ncomps = 5)
 \description{
 Outputs gct file in format for IGV
 }
-

@@ -31,4 +31,3 @@ PLSDA_from_file_and_predict_second_dataset(file, file2, sample.names,
 Builds PLS model from training dataset and Writes out loadings.
 Predicts classifications of test dataset and returns dataframe of predictions
 }
-

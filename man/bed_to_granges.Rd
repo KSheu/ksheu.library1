@@ -15,9 +15,5 @@ The tab-delimited file must be ordered as 'chr', 'start', 'end', 'id', 'score', 
 The minimal BED file must have the 'chr', 'start', 'end' columns.
 Any columns after the strand column are ignored.
 }
-\examples{
-bed_to_granges('my_bed_file.bed')
-}
 \keyword{BED}
 \keyword{GRanges}
-

@@ -5,8 +5,8 @@
 \title{Plot PLS}
 \usage{
 plot_pls(file, info.name, info.type, title = "", labels = TRUE,
-  PCx = "comp.1", PCy = "comp.2", ellipse = F, conf = 0.95, fliph = F,
-  flipv = F)
+  PCx = "comp.1", PCy = "comp.2", ellipse = F, conf = 0.95,
+  fliph = F, flipv = F)
 }
 \arguments{
 \item{file}{File containing scores matrix}
@@ -32,4 +32,3 @@ plot_pls(file, info.name, info.type, title = "", labels = TRUE,
 \description{
 Plots PLS from scores file (output of PLSR_from_file)
 }
-

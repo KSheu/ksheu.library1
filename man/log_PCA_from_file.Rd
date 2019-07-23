@@ -16,4 +16,3 @@ log_PCA_from_file(file, center = TRUE, scale = FALSE)
 \description{
 Reads file with samples in columns and variables in rows. Takes log2(x+1) and does PCA. Writes to file scores, loadings, eigenvalues.
 }
-

@@ -16,4 +16,3 @@ make_rnk_file(file, column)
 \description{
 make .rnk file (ie. for GSEA preranked)
 }
-

@@ -48,7 +48,7 @@ plot_pca_projection = function(file, rotated.file, info.name, info.type, info.na
           axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
     guides(color=guide_legend(title="Type"))+
     labs(title = title)+
-    theme_bw()+
+    theme_bw(base_size=18)+
     if(labels==TRUE){geom_text(mapping = aes(label = rownames(projected_data.reduced)), check_overlap = TRUE, size = 3)}
   
   pcx.y <- pcx.y +geom_point(data=pc.scores.reduced, aes_string(x=PCx,y=PCy)) +geom_point(size = I(2), aes(color = factor(type))) +
@@ -56,7 +56,7 @@ plot_pca_projection = function(file, rotated.file, info.name, info.type, info.na
           legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
           axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
     labs(title = title)+
-    theme_bw()
+    theme_bw(base_size=18)
   
   if(ellipse==TRUE){
     plot(projected_data.reduced[,c(PCx, PCy)], main=title)

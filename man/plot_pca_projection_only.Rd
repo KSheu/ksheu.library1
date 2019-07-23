@@ -32,4 +32,3 @@ plot_pca_projection_only(rotated.file2, info.name, info.type,
 \description{
 Plots projection from rotated.scores file (output of intersect_do_PCA_and_project_second_dataset)
 }
-

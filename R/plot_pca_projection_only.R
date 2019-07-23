@@ -38,7 +38,7 @@ plot_pca_projection_only =function (rotated.file2, info.name, info.type, title =
           axis.text.y = element_text(margin = margin(l = -14))) + 
     guides(color = guide_legend(title = "Type")) + labs(title = title) + 
     # coord_equal(ratio=1) +
-    theme_bw() + if (labels == TRUE) {
+    theme_bw(base_size=18) + if (labels == TRUE) {
       geom_text(data = projected_data, mapping = aes(label = rownames(projected_data)), 
                 check_overlap = TRUE, size = 3)
     }

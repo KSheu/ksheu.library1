@@ -41,4 +41,3 @@ plot_pca_projection(file, rotated.file, info.name, info.type, info.name2,
 \description{
 Plots projection from rotated.scores file (output of intersect_do_PCA_and_project_second_dataset) on top of original data
 }
-

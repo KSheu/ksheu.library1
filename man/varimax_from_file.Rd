@@ -19,4 +19,3 @@ varimax_from_file(file.scores, file.loadings, comp = 2, normalize = T)
 \description{
 Writes out Varimax rotated loadings and scores
 }
-

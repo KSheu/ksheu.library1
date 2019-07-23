@@ -36,8 +36,19 @@ PLSDA_from_file_and_predict_second_dataset = function(file, file2, sample.names,
   t.data$group = (response.values[match(rownames(t.data), sample.names)])
   pls.fit = plsda(X = t.data[,-ncol(t.data)], Y = (t.data[,ncol(t.data)]), scale = scale, ncomp = comps)
   plotIndiv(pls.fit, legend = T,ind.names = ind.names)
-  write.table(as.data.frame(pls.fit$loadings$X), paste0(gsub(".txt", "", file), "_PLSDA_Xloadings.txt"), sep = "\t", row.names = T, quote = F)
+  
+  #write out ----
+  x.variates = data.frame(pls.fit$variates$X)
+  x.loadings = data.frame(pls.fit$loadings$X)
+  x.exp_variance = data.frame(pls.fit$explained_variance$X)
+  variates.X = cbind(Score = rownames(pls.fit$variates$X), x.variates)
+  loadings.X = cbind(Loading = rownames(pls.fit$loadings$X), x.loadings)
+  rownames(x.exp_variance) = paste0("comp.",seq(1,nrow(x.exp_variance)))
 
+  write.table(as.data.frame(variates.X), paste0(gsub(".txt", "", file), "_PLSDA_Xscores.txt"), sep = "\t", row.names = T, quote = F)
+  write.table(as.data.frame(loadings.X), paste0(gsub(".txt", "", file), "_PLSDA_Xloadings.txt"), sep = "\t", row.names = T, quote = F)
+  write.table(as.data.frame(x.exp_variance), paste0(gsub(".txt", "", file), "_PLSR_Xpve.txt"), sep = "\t", row.names = T, quote = F)
+  
   rownames(data2) = data2[,1]
   t.data2 = data.frame(t(data2[,-1])) 
   

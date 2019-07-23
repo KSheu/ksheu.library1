@@ -4,8 +4,8 @@
 \alias{NNMF_from_file}
 \title{Nonnegative matrix factorization}
 \usage{
-NNMF_from_file(file, rank = 5, method = "scd", loss = "mkl", impute = F,
-  verbose = 2)
+NNMF_from_file(file, rank = 5, method = "scd", loss = "mkl",
+  impute = F, verbose = 2)
 }
 \arguments{
 \item{file}{file for A matrix (.txt or .RDS file)}
@@ -28,4 +28,3 @@ Output: writes to file decomposed matrices W (loadings) and H (scores) that mini
 \details{
 Returns nnmf object
 }
-

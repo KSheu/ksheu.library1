@@ -4,8 +4,8 @@
 \alias{calculate_signature_scores}
 \title{calculate signature scores}
 \usage{
-calculate_signature_scores(file, geneset, info.name = NA, info.type = NA,
-  plot.title = "Signature scores")
+calculate_signature_scores(file, geneset, info.name = NA,
+  info.type = NA, plot.title = "Signature scores")
 }
 \arguments{
 \item{file}{Filepath/filename of expression data matrix}
@@ -23,4 +23,3 @@ Reads file with samples in columns and variables in rows, and geneset list.
 Calculates sum z-score signatures across provided samples, and writes to file
 Returns dataframe of signature scores
 }
-

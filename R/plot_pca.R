@@ -29,8 +29,8 @@ plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
   if (flipv==T){table[,PCy] = table[,PCy]*-1}
   
   sdev = read.delim(paste0(gsub("scores.txt","",file),"sdev.txt"))
-  sdev$var = sdev^2
-  sdev$pve = round(sdev$var/sum(sdev$var) *100, digits = 2)
+  sdev$var = unlist(sdev^2)
+  sdev$pve = unlist(round(sdev$var/sum(sdev$var) * 100, digits = 2))
   rownames(sdev) = paste0("PC",seq(1,nrow(sdev)))
   
   
@@ -42,7 +42,7 @@ plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
     labs(title = title, 
          x = paste0(PCx," (", sdev$pve[match(PCx, rownames(sdev))], "%)"),
          y = paste0(PCy," (", sdev$pve[match(PCy, rownames(sdev))], "%)"))+
-    theme_bw()+
+    theme_bw(base_size=18)+
     if(labels==TRUE){geom_text(data = table, mapping = aes(label = Score), check_overlap = TRUE, size = 3)}
   
   

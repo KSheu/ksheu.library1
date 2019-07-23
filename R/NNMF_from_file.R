@@ -21,8 +21,9 @@ NNMF_from_file <- function(file, rank = 5, method = "scd", loss = "mkl", impute 
   require(NNLM)
   
   if(grepl(".txt$", file)==TRUE){
-    matrix = read.delim(file, row.names = 1)
-    matrix = as.matrix(matrix)
+    matrix = read.delim(file)
+    rownames(matrix) = matrix[,1]
+    matrix = as.matrix(matrix[,-1])
   }else{
     matrix <-readRDS(file)
     matrix = as.matrix(matrix)

@@ -14,4 +14,3 @@ make_scores_file(file, ncomps = 5)
 \description{
 Writes out minimized scores file
 }
-

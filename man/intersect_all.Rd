@@ -15,4 +15,3 @@ Returns a vector containing common items
 \description{
 Intersects all lists
 }
-

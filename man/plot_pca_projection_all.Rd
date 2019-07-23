@@ -4,10 +4,10 @@
 \alias{plot_pca_projection_all}
 \title{Plot PCA projection and data points from original PCA with all colored in}
 \usage{
-plot_pca_projection_all(file, rotated.file, info.name, info.type, info.name2,
-  info.type2, title = "Projection", labels = F, PCx = "PC1",
-  PCy = "PC2", ellipse = F, conf = 0.95, density = F, fliph = F,
-  flipv = F)
+plot_pca_projection_all(file, rotated.file, info.name, info.type,
+  info.name2, info.type2, title = "Projection", labels = F,
+  PCx = "PC1", PCy = "PC2", ellipse = F, conf = 0.95,
+  density = F, fliph = F, flipv = F)
 }
 \arguments{
 \item{file}{scores file of original data}
@@ -39,4 +39,3 @@ plot_pca_projection_all(file, rotated.file, info.name, info.type, info.name2,
 \description{
 Plots projection from rotated.scores file (output of intersect_do_PCA_and_project_second_dataset) on top of original data
 }
-
