@@ -4,12 +4,18 @@
 \alias{tensor_decomp}
 \title{Implements tensor factorization methods, Tucker and PARAFAC/canonical polyadic decomp}
 \usage{
-tensor_decomp(arr, method, rank = tnsr@modes)
+tensor_decomp(matrix, dims, method, xlabs = rownames(matrix),
+  ylabs = colnames(matrix)[-1], zlabs = NULL, ranks = A@modes,
+  savename = "TEST")
 }
 \arguments{
-\item{arr}{multidimensional array that get converted through as.tensor(arr)}
+\item{matrix}{matrix that gets coverted to multidimensional array that get converted through as.tensor(arr)}
+
+\item{dims}{dimensions to fold the input matrix}
 
 \item{method}{"tucker" or "cp"}
+
+\item{z_labs}{labels for the extra dimensions created, rows and colnames are the x and y axis labs}
 
 \item{rank}{default = 3, number (if CP) or vector of numbers (if tucker) that is <= the ranks of the tensor}
 }

@@ -1,77 +1,230 @@
-##GSEA-squared (last mod. 07/2019 ksheu)
-library(ksheu.library1); library(dplyr); library(ggplot2);library(pheatmap);library(ggpubr);library(Matching);library(RColorBrewer)
-source("C:/Users/msheu/Desktop/Katherine/signed-ks-test.R") #from Github ks.test2
+#' #GSEA-squared (last mod. 07/2019 ksheu)
+#' 
+#' 
+#' Input: excel file paths for GSEA output, pos and neg enrichment
+#' Input: keyword groups to search 
+#' Output: graph and pvals
+#' 
+#' @param file1,file2 Paths to GSEA excel file outputs
+#' @param keywords Keyword groups to search for (eg. c("CELL_CYLE", "INFLAMMATORY|IMMUNE"))
+#' @param keyword.labels Labels for keyword groups, in the same order (eg. c("cycle", "immune"))
+#' @param get.keywords perform ks tests on individual words to get candidate keywords
+#' @param dir set output directory
+#' 
+#' 
+#' 
+#' @export
 
-#fig1e PLOT----
-dfm = read.delim("F:/gsea/small_cell_rnk_GSEA/lungprostate_PCA_V1_c5.GseaPreranked.1515644251568/gsea_report_for_na_neg_1515644251568.xls")
-dfm2 = read.delim("F:/gsea/small_cell_rnk_GSEA/lungprostate_PCA_V1_c5.GseaPreranked.1515644251568/gsea_report_for_na_pos_1515644251568.xls")
-dfm = rbind(dfm, dfm2)
-dfm = dfm[order(dfm$NES),]
-dfm$rnk = seq(1:nrow(dfm))
 
-#figure out important keywords
-words = data.frame(table(unlist(strsplit(tolower(dfm$NAME), "_"))))
-words = words[order(words$Freq, decreasing = T),]
-words$Var1 = toupper(words$Var1)
-str(words)
-words.upper = words[which(words$Freq>5&words$Freq<500),]
-
-set.seed(1);kspvals = data.frame(word = as.character(), pval = as.numeric(), ES = as.numeric())
-for (i in seq(1:nrow(words.upper))){
-  tryCatch({
-    print(i)
-    print(words.upper$Var1[i])
-    test<-as.numeric(dfm$rnk[(grepl(words.upper$Var1[i], dfm$NAME))] ) 
-    background<-as.numeric(dfm$rnk[!(grepl(words.upper$Var1[i], dfm$NAME))] ) 
-    # pval = data.frame(word = words.upper$Var1[i], pval= ks.boot(test, background, n=100)$ks.boot$p.value)
-    pval = data.frame(word = words.upper$Var1[i], pval= ks.test.2(test, background)$p, ES= ks.test.2(test, background)$ES)
-    kspvals = rbind(kspvals, pval)
-  },error=function(e){})
+#
+gsea_squared = function(file1, file2, keywords, keyword.labels = keywords, get.keywords = F, dir = getwd()){
+  require(ksheu.library1); require(dplyr); require(ggplot2);
+  require(pheatmap);require(ggpubr);require(Matching);require(RColorBrewer)
+  # source("C:/Users/msheu/Desktop/Katherine/signed-ks-test.R") #from Github ks.test2
+  
+  dfm = read.delim(file1)
+  dfm2 = read.delim(file2)
+  dfm = rbind(dfm, dfm2)
+  dfm = dfm[order(dfm$NES),]
+  dfm$rnk = seq(1:nrow(dfm))
+  
+  if (get.keywords==T){
+    #figure out important keywords
+    words = data.frame(table(unlist(strsplit(tolower(dfm$NAME), "_")))) #split words
+    words = words[order(words$Freq, decreasing = T),]
+    words$Var1 = toupper(words$Var1)
+    str(words)
+    words.upper = words[which(words$Freq>5&words$Freq<500),] #frequency filter
+    
+    set.seed(1);kspvals = data.frame(word = as.character(), pval = as.numeric(), ES = as.numeric())
+    for (i in seq(1:nrow(words.upper))){
+      tryCatch({
+        print(i)
+        print(words.upper$Var1[i])
+        test<-as.numeric(dfm$rnk[(grepl(words.upper$Var1[i], dfm$NAME))] ) 
+        background<-as.numeric(dfm$rnk[!(grepl(words.upper$Var1[i], dfm$NAME))] ) 
+        # pval = data.frame(word = words.upper$Var1[i], pval= ks.boot(test, background, n=100)$ks.boot$p.value)
+        pval = data.frame(word = words.upper$Var1[i], pval= ks.test.2(test, background)$p, ES= ks.test.2(test, background)$ES)
+        kspvals = rbind(kspvals, pval)
+      },error=function(e){})
+    }
+    
+    kspvals$freq = words.upper$Freq[match(kspvals$word, words.upper$Var1)]
+    kspvals = kspvals[order(kspvals$pval),]
+    write.table(kspvals, "./word_freq_ks.test.2.txt", quote =F, sep = "\t", row.names = F)
+    
+  }
+  
+  # keywords = c("NEURO", "IMMUNE",...)
+  # keyword.labels = c("neuro", "immune", ...)
+  keywords = strsplit((keywords), ",")
+  keyword.labels = strsplit((keyword.labels), ",")
+  
+  dfm$type = "other"
+  for (i in keywords){
+    dfm$type = ifelse(grepl(keywords[i], dfm$NAME), keywords.labels[i], dfm$type)
+  }
+  
+  dfm$logFDR = log10(dfm$FDR.q.val)
+  ggplot(dfm, aes(type, rnk))+geom_point(aes(color = type), position = "jitter")+
+    theme_classic(base_size = 11)+ 
+    theme(text = element_text(size=20), axis.text.y = element_text(angle = -30, vjust = 1, hjust=1.2),legend.position = "none") +
+    scale_x_discrete(limits = keyword.labels)+
+    ylab("rank")
+  
+  # plot(abs(dfm$NES), dfm$FDR.q.val)
+  dfm$sig = ifelse((dfm$FDR.q.val<0.05),1,0)
+  table(dfm$type, dfm$sig)
+  
+  #plot with diff shape for FDR cutoff
+  ggplot(dfm, aes(type, rnk))+geom_point(aes(color = type, shape = sig), position = "jitter")+
+    theme_classic(base_size = 11)+ 
+    theme(text = element_text(size=20), axis.text.y = element_text(angle = -30, vjust = 1, hjust=1.2),legend.position = "none") +
+    scale_x_discrete(limits = keyword.labels)+
+    ylab("rank")
+  
+  #get pvals
+  frame = data.frame(pval = as.numeric())
+  for (i in keyword.labels){
+    test<-as.numeric(dfm$rnk[(dfm$type==keyword.labels[i])] )
+    background<-as.numeric(dfm$rnk[!(dfm$type==keyword.labels[i])] )
+    frame = rbind(frame, -log10(ks.test.2(test, background)$p))
+    
+  }
+  
+  rownames(frame) = keyword.labels
+  return(frame)
+  
 }
 
-kspvals$freq = words.upper$Freq[match(kspvals$word, words.upper$Var1)]
-kspvals = kspvals[order(kspvals$pval),]
-# kspvals$rnk = seq(1:nrow(kspvals))
-# kspvals$type = ifelse(grepl("NEURON|NEUROTRANSMITTER|SYNAP|VOLTAGE|CEREBRAL|CORTEX", kspvals$word), "neuro",
-#                       ifelse(grepl("CELL_CYCLE|MITOSIS|MITOTIC|DNA_REP|CHROMOSOME_SEG|SPINDLE", kspvals$word), "cycle",
-#                              ifelse(grepl("INFLAM|IMMUNE|IMMUNITY|INTERLUEKIN|LEUKOCYTE", kspvals$word), "immune",
-#                                     ifelse(grepl("ADHE", kspvals$word), "adhesion",
-#                                            ifelse(grepl("SPLIC", kspvals$word),"splicing","x_other")))))
-# ggplot(kspvals, aes(type, rnk))+geom_point(aes(color = type), position = "jitter")+
-#   theme(text = element_text(size=20)) +theme_classic()
-# write.table(kspvals, "D:/gsea/small_cell_rnk_GSEA/lungprostate_PCA_V1_c5.GseaPreranked.1515644251568/word_freq_ks.boot.txt", quote =F, sep = "\t", row.names = F)
-write.table(kspvals, "F:/gsea/small_cell_rnk_GSEA/lungprostate_PCA_V1_c5.GseaPreranked.1515644251568/word_freq_ks.test.2.txt", quote =F, sep = "\t", row.names = F)
+
+#from https://github.com/franapoli/signed-ks-test/blob/master/signed-ks-test.R
+ks.test.2 <- function (x, y, ..., alternative = c("two.sided", "less", "greater"), exact = NULL, maxCombSize=10000) 
+{
+  alternative <- match.arg(alternative)
+  DNAME <- deparse(substitute(x))
+  x <- x[!is.na(x)]
+  n <- length(x)
+  if (n < 1L) 
+    stop("not enough 'x' data")
+  PVAL <- NULL
+  if (is.numeric(y)) {
+    DNAME <- paste(DNAME, "and", deparse(substitute(y)))
+    y <- y[!is.na(y)]
+    n.x <- as.double(n)
+    n.y <- length(y)
+    if (n.y < 1L) 
+      stop("not enough 'y' data")
+    if (is.null(exact)) {
+      exact <- (n.x * n.y < maxCombSize)
+      if(!exact)
+        warning(paste("P-value not computed exactly because",
+                      "of combined sample size"))
+    }
+    METHOD <- "Two-sample Kolmogorov-Smirnov test"
+    TIES <- FALSE
+    n <- n.x * n.y/(n.x + n.y)
+    w <- c(x, y)
+    z <- cumsum(ifelse(order(w) <= n.x, 1/n.x, -1/n.y))
+    if (length(unique(w)) < (n.x + n.y)) {
+      if (exact) {
+        warning("cannot compute exact p-value with ties")
+        exact <- FALSE
+      }
+      else warning("p-value will be approximate in the presence of ties")
+      z <- z[c(which(diff(sort(w)) != 0), n.x + n.y)]
+      TIES <- TRUE
+    }
+    STATISTIC <- switch(alternative, two.sided = max(abs(z)), 
+                        greater = max(z), less = -min(z))
+    
+    edge <- which.max(abs(z))
+    ES <- z[edge]
+    
+    nm_alternative <- switch(alternative, two.sided = "two-sided", 
+                             less = "the CDF of x lies below that of y", greater = "the CDF of x lies above that of y")
+    if (exact && (alternative == "two.sided") && !TIES) 
+      PVAL <- 1 - .Call(stats:::C_pSmirnov2x, STATISTIC, n.x, n.y)
+  }
+  else {
+    if (is.character(y)) 
+      y <- get(y, mode = "function", envir = parent.frame())
+    if (!is.function(y)) 
+      stop("'y' must be numeric or a function or a string naming a valid function")
+    METHOD <- "One-sample Kolmogorov-Smirnov test"
+    TIES <- FALSE
+    if (length(unique(x)) < n) {
+      warning("ties should not be present for the Kolmogorov-Smirnov test")
+      TIES <- TRUE
+    }
+    if (is.null(exact)) 
+      exact <- (n < 100) && !TIES
+    x <- y(sort(x), ...) - (0:(n - 1))/n
+    STATISTIC <- switch(alternative, two.sided = max(c(x, 
+                                                       1/n - x)), greater = max(1/n - x), less = max(x))
+    if (exact) {
+      PVAL <- 1 - if (alternative == "two.sided")
+        result = tryCatch({
+          .C(C_pkolmogorov2x, p = as.double(STATISTIC), 
+             as.integer(n), PACKAGE = "stats")$p
+        }, warning = function(w) {
+          warning(w)
+        }, error = function(e) {
+          .Call(C_pKolmogorov2x, STATISTIC, n)
+        }, finally = {
+        })
+      
+      else {
+        pkolmogorov1x <- function(x, n) {
+          if (x <= 0) 
+            return(0)
+          if (x >= 1) 
+            return(1)
+          j <- seq.int(from = 0, to = floor(n * (1 - 
+                                                   x)))
+          1 - x * sum(exp(lchoose(n, j) + (n - j) * log(1 - 
+                                                          x - j/n) + (j - 1) * log(x + j/n)))
+        }
+        pkolmogorov1x(STATISTIC, n)
+      }
+    }
+    nm_alternative <- switch(alternative, two.sided = "two-sided", 
+                             less = "the CDF of x lies below the null hypothesis", 
+                             greater = "the CDF of x lies above the null hypothesis")
+  }
+  names(STATISTIC) <- switch(alternative, two.sided = "D", 
+                             greater = "D^+", less = "D^-")
+  if (is.null(PVAL)) {
+    pkstwo <- function(x, tol = 1e-06) {
+      if (is.numeric(x)) 
+        x <- as.double(x)
+      else stop("argument 'x' must be numeric")
+      p <- rep(0, length(x))
+      p[is.na(x)] <- NA
+      IND <- which(!is.na(x) & (x > 0))
+      if (length(IND))
+        p[IND] <- tryCatch({
+          tryRes <- .C(stats:::C_pkstwo, length(x[IND]), p = x[IND], 
+                       as.double(tol), PACKAGE = "stats")$p
+        }, warning = function(w) {
+          warning(w)
+        }, error = function(e) {
+          tryRes <- .Call(stats:::C_pKS2, p = x[IND], tol)
+        }, finally = {
+        })
+      p
+    }
+    PVAL <- ifelse(alternative == "two.sided", 1 - pkstwo(sqrt(n) * 
+                                                            STATISTIC), exp(-2 * n * STATISTIC^2))
+  }
+  PVAL <- min(1, max(0, PVAL))
+  RVAL <- list(statistic = STATISTIC, p.value = PVAL, alternative = nm_alternative, 
+               method = METHOD, data.name = DNAME, ES = ES, edge = edge)
+  class(RVAL) <- "htest"
+  return(RVAL)
+}
 
 
-dfm$type = ifelse(grepl("NEURO|NEUROTRANSMITTER|SYNAP|VOLTAGE|AXON|CEREBRAL|CORTEX", dfm$NAME), "neuro",
-                  ifelse(grepl("CELL_CYCLE|MITOTIC|DNA_REPLICATION|CHROMOSOME_SEGREGATION|SPINDLE|CELL_DIVISION", dfm$NAME), "cycle",
-                         ifelse(grepl("INFLAM|IMMUNE|IMMUNITY|INTERLUEKIN|LEUKOCYTE", dfm$NAME), "immune",
-                                ifelse(grepl("ADHESION|ADHERENS", dfm$NAME), "adhesion",
-                                       ifelse(grepl("SPLIC", dfm$NAME),"splicing","x_other")))))
-dfm$logFDR = log10(dfm$FDR.q.val)
-ggplot(dfm, aes(type, rnk))+geom_point(aes(color = type), position = "jitter")+
-  theme_classic(base_size = 11)+ theme(text = element_text(size=20), axis.text.y = element_text(angle = -30, vjust = 1, hjust=1.2),legend.position = "none") +scale_x_discrete(limits=c("adhesion", "immune", "splicing", "cycle", "neuro"))+
-  geom_abline(slope = 0, intercept =  4591,size = 1, linetype="dotted")+
-  geom_abline(slope = 0, intercept =  488,size = 1,linetype="dotted")+ylab("rank")
-
-plot(abs(dfm$NES), dfm$FDR.q.val)
-dfm$sig = ifelse((dfm$FDR.q.val<0.05),1,0)
-table(dfm$type, dfm$sig)
 
 
-frame = data.frame(pval = as.numeric())
-test<-as.numeric(dfm$rnk[(dfm$type=="neuro")] )
-background<-as.numeric(dfm$rnk[!(dfm$type=="neuro")] )
-frame = rbind(frame, -log10(ks.test.2(test, background)$p))
-test<-as.numeric(dfm$rnk[(dfm$type=="cycle")] )
-background<-as.numeric(dfm$rnk[!(dfm$type=="cycle")])
-frame = rbind(frame, -log10(ks.test.2(test, background)$p))
-test<-as.numeric(dfm$rnk[(dfm$type=="splicing")] )
-background<-as.numeric(dfm$rnk[!(dfm$type=="splicing")])
-frame = rbind(frame, -log10(ks.test.2(test, background)$p))
-test<-as.numeric(dfm$rnk[(dfm$type=="immune")] )
-background<-as.numeric(dfm$rnk[!(dfm$type=="immune")] )
-frame = rbind(frame, -log10(ks.test.2(test, background)$p))
-test<-as.numeric(dfm$rnk[(dfm$type=="adhesion")] )
-background<-as.numeric(dfm$rnk[!(dfm$type=="adhesion")] )
-frame = rbind(frame, -log10(ks.test.2(test, background)$p))
+
