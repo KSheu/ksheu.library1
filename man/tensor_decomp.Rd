@@ -6,7 +6,7 @@
 \usage{
 tensor_decomp(matrix, dims, method, xlabs = rownames(matrix),
   ylabs = colnames(matrix)[-1], zlabs = NULL, ranks = A@modes,
-  savename = "TEST")
+  savename = "TEST", plot = F)
 }
 \arguments{
 \item{matrix}{matrix that gets coverted to multidimensional array that get converted through as.tensor(arr)}
@@ -14,6 +14,8 @@ tensor_decomp(matrix, dims, method, xlabs = rownames(matrix),
 \item{dims}{dimensions to fold the input matrix}
 
 \item{method}{"tucker" or "cp"}
+
+\item{plot}{plot heamtmaps of eigenvectors}
 
 \item{z_labs}{labels for the extra dimensions created, rows and colnames are the x and y axis labs}
 
