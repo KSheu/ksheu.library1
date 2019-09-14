@@ -18,6 +18,20 @@
 
 #
 gsea_squared = function(file1, file2, keywords, keyword.labels = keywords, get.keywords = F, dir = getwd()){
+  
+  # file1 = "./Mseries_melanoma33_X2.xscores_c5.GseaPreranked.1567983643452/gsea_report_for_na_pos_1567983643452.xls";
+  # file2 = "./Mseries_melanoma33_X2.xscores_c5.GseaPreranked.1567983643452/gsea_report_for_na_neg_1567983643452.xls";
+  # keywords = c("MHC","PIGMENT|MELANIN|MELANOCYTE","DIFFERENTIATION|DEVELOPMENT","LIPID|STEROL")
+  # keyword.labels = c("MHC","melanin",'differentiation', "lipid")
+  # get.keywords = F; dir = "./Mseries_melanoma33_X2.xscores_c5.GseaPreranked.1567983643452/"
+
+  file1 = "./Mseries_melanoma33_X1diff_c5.GseaPreranked.1567979833887/gsea_report_for_na_pos_1567979833887.xls"
+  file2 = "./Mseries_melanoma33_X1diff_c5.GseaPreranked.1567979833887/gsea_report_for_na_neg_1567979833887.xls"
+  keywords = c("MHC","PIGMENT|MELANIN|MELANOCYTE","DIFFERENTIATION|DEVELOPMENT","LIPID|STEROL")
+  keyword.labels = c("MHC","melanin",'differentiation', "lipid")
+  
+  setwd(dir)
+  
   require(ksheu.library1); require(dplyr); require(ggplot2);
   require(pheatmap);require(ggpubr);require(Matching);require(RColorBrewer)
   # source("C:/Users/msheu/Desktop/Katherine/signed-ks-test.R") #from Github ks.test2
@@ -61,31 +75,38 @@ gsea_squared = function(file1, file2, keywords, keyword.labels = keywords, get.k
   keyword.labels = strsplit((keyword.labels), ",")
   
   dfm$type = "other"
-  for (i in keywords){
-    dfm$type = ifelse(grepl(keywords[i], dfm$NAME), keywords.labels[i], dfm$type)
+  for (i in seq(1:length(keywords))){
+    dfm$type = ifelse(grepl(keywords[i], dfm$NAME), keyword.labels[i], dfm$type)
   }
+  dfm$type = unlist(dfm$type)
   
   dfm$logFDR = log10(dfm$FDR.q.val)
-  ggplot(dfm, aes(type, rnk))+geom_point(aes(color = type), position = "jitter")+
+  p<-ggplot(dfm, aes(type, rnk))+geom_point(aes(color = type), position = "jitter")+
     theme_classic(base_size = 11)+ 
-    theme(text = element_text(size=20), axis.text.y = element_text(angle = -30, vjust = 1, hjust=1.2),legend.position = "none") +
-    scale_x_discrete(limits = keyword.labels)+
+    theme(text = element_text(size=20), #axis.text.y = element_text(angle = 0, vjust = 1, hjust=1.2),
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1.2),legend.position = "none") +
+    # scale_x_discrete(limits = keyword.labels)+
     ylab("rank")
   
+  print(p)
+  
   # plot(abs(dfm$NES), dfm$FDR.q.val)
-  dfm$sig = ifelse((dfm$FDR.q.val<0.05),1,0)
+  dfm$sig = as.factor(ifelse((dfm$FDR.q.val<0.05),1,0))
   table(dfm$type, dfm$sig)
   
   #plot with diff shape for FDR cutoff
-  ggplot(dfm, aes(type, rnk))+geom_point(aes(color = type, shape = sig), position = "jitter")+
+  p<-ggplot(dfm, aes(type, rnk))+geom_point(aes(color = type, shape = sig), position = "jitter")+
     theme_classic(base_size = 11)+ 
-    theme(text = element_text(size=20), axis.text.y = element_text(angle = -30, vjust = 1, hjust=1.2),legend.position = "none") +
-    scale_x_discrete(limits = keyword.labels)+
+    theme(text = element_text(size=20), #axis.text.y = element_text(angle = 0, vjust = 1, hjust=1.2),
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1.2),legend.position = "none") +
+    # scale_x_discrete(limits = keyword.labels)+
     ylab("rank")
+  
+  print(p)
   
   #get pvals
   frame = data.frame(pval = as.numeric())
-  for (i in keyword.labels){
+  for (i in seq(1:length(keyword.labels))){
     test<-as.numeric(dfm$rnk[(dfm$type==keyword.labels[i])] )
     background<-as.numeric(dfm$rnk[!(dfm$type==keyword.labels[i])] )
     frame = rbind(frame, -log10(ks.test.2(test, background)$p))
