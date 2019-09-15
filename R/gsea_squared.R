@@ -25,11 +25,11 @@ gsea_squared = function(file1, file2, keywords, keyword.labels = keywords, get.k
   # keyword.labels = c("MHC","melanin",'differentiation', "lipid")
   # get.keywords = F; dir = "./Mseries_melanoma33_X2.xscores_c5.GseaPreranked.1567983643452/"
 
-  file1 = "./Mseries_melanoma33_X1diff_c5.GseaPreranked.1567979833887/gsea_report_for_na_pos_1567979833887.xls"
-  file2 = "./Mseries_melanoma33_X1diff_c5.GseaPreranked.1567979833887/gsea_report_for_na_neg_1567979833887.xls"
-  keywords = c("MHC","PIGMENT|MELANIN|MELANOCYTE","DIFFERENTIATION|DEVELOPMENT","LIPID|STEROL")
-  keyword.labels = c("MHC","melanin",'differentiation', "lipid")
-  
+  # file1 = "./Mseries_melanoma33_X1diff_c5.GseaPreranked.1567979833887/gsea_report_for_na_pos_1567979833887.xls"
+  # file2 = "./Mseries_melanoma33_X1diff_c5.GseaPreranked.1567979833887/gsea_report_for_na_neg_1567979833887.xls"
+  # keywords = c("MHC","PIGMENT|MELANIN|MELANOCYTE","DIFFERENTIATION|DEVELOPMENT","LIPID|STEROL")
+  # keyword.labels = c("MHC","melanin",'differentiation', "lipid")
+
   setwd(dir)
   
   require(ksheu.library1); require(dplyr); require(ggplot2);
