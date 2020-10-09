@@ -25,14 +25,21 @@ plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
   require(vegan)
   table <- read.table(file, header = TRUE)
   table$type = info.type[match(table$Score, info.name)]
-  if (fliph==T){table[,PCx] = table[,PCx]*-1}
-  if (flipv==T){table[,PCy] = table[,PCy]*-1}
   
+  if (grepl("scores_VARIMAX.txt", file)){
+    PCx = gsub("PC","V", PCx)
+    PCy = gsub("PC","V", PCy)
+    if (fliph==T){table[,PCx] = table[,PCx]*-1}
+    if (flipv==T){table[,PCy] = table[,PCy]*-1}
+  }
+  
+  sdev_name = paste0(gsub("scores.txt","",file),"sdev.txt")
+  
+  if ((sdev_name %in% list.files() )){
   sdev = read.delim(paste0(gsub("scores.txt","",file),"sdev.txt"))
   sdev$var = unlist(sdev^2)
   sdev$pve = unlist(round(sdev$var/sum(sdev$var) * 100, digits = 2))
   rownames(sdev) = paste0("PC",seq(1,nrow(sdev)))
-  
   
   pcx.y <- ggplot(table, aes_string(x=PCx,y=PCy)) +geom_point(size = I(3), aes(color = factor(type))) +
     theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
@@ -44,7 +51,30 @@ plot_pca = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
          y = paste0(PCy," (", sdev$pve[match(PCy, rownames(sdev))], "%)"))+
     theme_bw(base_size=18)+
     if(labels==TRUE){geom_text(data = table, mapping = aes(label = Score), check_overlap = TRUE, size = 3)}
+  }
   
+  else if (grepl("scores_VARIMAX.txt", file)){
+    PCx = gsub("PC","V", PCx)
+    PCy = gsub("PC","V", PCy)
+    pcx.y <- ggplot(table, aes_string(x=PCx,y=PCy)) +geom_point(size = I(3), aes(color = factor(type))) +
+      theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
+            legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
+            axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
+      guides(color=guide_legend(title="Type"))+
+      labs(title = title)+
+      theme_bw(base_size=18)+
+      if(labels==TRUE){geom_text(data = table, mapping = aes(label = Score), check_overlap = TRUE, size = 3)}
+  }
+  else{
+  pcx.y <- ggplot(table, aes_string(x=PCx,y=PCy)) +geom_point(size = I(3), aes(color = factor(type))) +
+    theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
+          legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
+          axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
+    guides(color=guide_legend(title="Type"))+
+    labs(title = title)+
+    theme_bw(base_size=18)+
+    if(labels==TRUE){geom_text(data = table, mapping = aes(label = Score), check_overlap = TRUE, size = 3)}
+  }
   
   if(ellipse==TRUE){
     plot(table[,c(PCx, PCy)], main=title)
