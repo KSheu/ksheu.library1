@@ -18,7 +18,7 @@
 #' @export
 #' 
 plot_pls = function(file, info.name, info.type, title = "", labels = TRUE, PCx="comp1", PCy="comp2", ellipse = F, conf = 0.95,
-                    fliph = F, flipv = F){  
+                    pve = T, fliph = F, flipv = F){  
   #Input: PLSR scores file to be ploted
   ##process PLS output and adds groupings
   require(ggplot2)
@@ -33,11 +33,13 @@ plot_pls = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
     table[, PCy] = table[, PCy] * -1
   }
   
-  exp_var = read.delim(paste0(gsub("scores.txt","",file),"pve.txt"), row.names = 1)
-  exp_var$pve =  unlist(round(exp_var[,1] * 100, digits = 2))
-  rownames(exp_var) = paste0("comp",seq(1,nrow(exp_var)))
-  
-  
+  if (pve == T){
+    exp_var = read.delim(paste0(gsub("scores.txt","",file),"pve.txt"), row.names = 1)
+    exp_var$pve =  unlist(round(exp_var[,1] * 100, digits = 2))
+    rownames(exp_var) = paste0("comp",seq(1,nrow(exp_var)))
+  }
+   
+  if(pve == T){
   pcx.y <- ggplot(table, aes_string(x=PCx,y=PCy)) +geom_point(size = I(3), aes(color = factor(type))) +
     theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
           legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
@@ -48,7 +50,17 @@ plot_pls = function(file, info.name, info.type, title = "", labels = TRUE, PCx="
          y = paste0(PCy," (", exp_var$pve[match(PCy, rownames(exp_var))], "%)"))+
     theme_bw(base_size=18)+
     if(labels==TRUE){geom_text(data = table, mapping = aes(label = Score), check_overlap = TRUE, size = 3)}
-  
+  }else{
+    pcx.y <- ggplot(table, aes_string(x=PCx,y=PCy)) +geom_point(size = I(3), aes(color = factor(type))) +
+      theme(legend.position="right",plot.title=element_text(size=30),legend.text=element_text(size=22),
+            legend.title=element_text(size=20),axis.title=element_text(size=30),legend.background = element_rect(),
+            axis.text.x = element_text(margin = margin(b=-2)),axis.text.y = element_text(margin = margin(l=-14)))+
+      guides(color=guide_legend(title="Type"))+
+      labs(title = title,x = paste0(PCx),y = paste0(PCy))+
+      theme_bw(base_size=18)+
+      if(labels==TRUE){geom_text(data = table, mapping = aes(label = Score), check_overlap = TRUE, size = 3)}
+    
+  }
   
   if(ellipse==TRUE){
     plot(table[,c(PCx, PCy)], main=title)
