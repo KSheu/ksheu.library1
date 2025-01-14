@@ -15,6 +15,6 @@ make_loadings_gctfile = function(file, ncomps = 5){
   name=sub(".txt","",file)
   out_file = paste0(name, "_PC1-5.gct")
   
-  cat("#1.2\n1\t1\n", file=out_file)
+  cat(paste0("#1.2\n",dim(loadings)[1],"\t",ncomps,"\n"), file=out_file)
   write.table(loadings, out_file,sep = "\t", row.names =F, quote = F, append = T)
 }
