@@ -43,7 +43,7 @@ PLSR_from_file = function(file, sample.names, sample.type, y.response, title = "
     #write out
     x.variates = data.frame(pls.fit$variates$X)
     x.loadings = data.frame(pls.fit$loadings$X)
-    x.exp_variance = data.frame(pls.fit$explained_variance$X)
+    x.exp_variance = data.frame(pls.fit$prop_expl_var$X)
     variates.X = cbind(Score = rownames(pls.fit$variates$X), x.variates)
     loadings.X = cbind(Loading = rownames(pls.fit$loadings$X), x.loadings)
     rownames(x.exp_variance) = paste0("comp.",seq(1,nrow(x.exp_variance)))
@@ -70,7 +70,7 @@ PLSR_from_file = function(file, sample.names, sample.type, y.response, title = "
   #write out
   x.variates = data.frame(pls.fit$variates$X)
   x.loadings = data.frame(pls.fit$loadings$X)
-  x.exp_variance = data.frame(pls.fit$explained_variance$X)
+  x.exp_variance = data.frame(pls.fit$prop_expl_var$X)
   variates.X = cbind(Score = rownames(pls.fit$variates$X), x.variates)
   loadings.X = cbind(Loading = rownames(pls.fit$loadings$X), x.loadings)
   rownames(x.exp_variance) = paste0("comp.",seq(1,nrow(x.exp_variance)))
