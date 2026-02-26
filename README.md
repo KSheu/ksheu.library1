@@ -1,5 +1,5 @@
 # ksheu.library1
-Useful functions and plotting.
+Useful functions and plotting for PCA.
 Tested compatilbility with R version >=4.4.2.  
 Install with: 
 ```
